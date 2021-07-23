@@ -2,13 +2,14 @@
   "expo": {
     "name": "My Portfolio",
     "slug": "myportfolio",
+    "scheme": "myportfolio",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#f7f7f7"
+      "backgroundColor": "#0A1033"
     },
     "updates": {
       "fallbackToCacheTimeout": 0

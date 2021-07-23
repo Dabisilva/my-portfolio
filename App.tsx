@@ -14,6 +14,7 @@ import {
 } from "@expo-google-fonts/rajdhani";
 
 import { Routes } from "./src/routes";
+import { AuthProvider } from "./src/context/auth";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -30,7 +31,9 @@ export default function App() {
     <SafeAreaProvider>
       <ScreenProvider baseFontSize={16}>
         <StatusBar style="light" translucent animated />
-        <Routes />
+        <AuthProvider>
+          <Routes />
+        </AuthProvider>
       </ScreenProvider>
     </SafeAreaProvider>
   );
