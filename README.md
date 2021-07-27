@@ -1,4 +1,4 @@
-Hi my name is Davi and i am pleno mobile developer. I have experience in react native with expo, api integration, oauth authetication, global states with context api and firebase connection.
+Hi my name is Davi and i am pleno mobile developer. I have experience in react native with expo, api integration, oauth authentication, global states with context api and firebase connection.
 
 ## TO SEE MY WORK
 
