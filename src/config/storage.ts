@@ -1,0 +1,6 @@
+const DATABASE_NAME = "@myportfolio:";
+
+const COLLECTION_USER = `${DATABASE_NAME}:user`;
+const COLLECTION_TOKEN = `${DATABASE_NAME}:token`;
+
+export { COLLECTION_USER, COLLECTION_TOKEN };

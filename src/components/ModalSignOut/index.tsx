@@ -19,6 +19,11 @@ export function ModalSignOut({ ...rest }: ModalProps) {
   const { handleSetModalValue } = useModal();
 
   const rem = useRem();
+
+  function logOut() {
+    handleSetModalValue(false);
+    signOut();
+  }
   return (
     <Modal transparent statusBarTranslucent animationType="fade" {...rest}>
       <TouchableWithoutFeedback onPress={() => handleSetModalValue(false)}>
@@ -65,7 +70,7 @@ export function ModalSignOut({ ...rest }: ModalProps) {
                 </TouchableOpacity>
                 <TouchableOpacity
                   activeOpacity={0.7}
-                  onPress={signOut}
+                  onPress={logOut}
                   style={[
                     styles.yesButton,
                     {

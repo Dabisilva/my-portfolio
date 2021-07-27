@@ -1,16 +1,18 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import AppLoading from "expo-app-loading";
 import { AuthNavigation } from "./auth.routes";
 import { StackRoutes } from "./stack.routes";
+import { useAuth } from "../context/auth";
 
 export function Routes() {
-  //const { user } = useAuth();
-
+  const { token, loading } = useAuth();
+  if (loading) {
+    return <AppLoading />;
+  }
   return (
     <NavigationContainer>
-      {/* {user?.token ? <StackRoutes /> : <AuthNavigation />} */}
-      <StackRoutes />
-      {/* <AuthNavigation /> */}
+      {token ? <StackRoutes /> : <AuthNavigation />}
     </NavigationContainer>
   );
 }

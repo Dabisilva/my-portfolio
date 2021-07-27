@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-
+import { Alert } from "react-native";
 import {
   makeRedirectUri,
   ResponseType,
@@ -20,9 +20,11 @@ const { REDIRECT_URI } = process.env;
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { api } from "../services/api";
+import { COLLECTION_TOKEN, COLLECTION_USER } from "../config/storage";
 
 type AuthContextData = {
   user: User;
+  token: string;
   loading: boolean;
   signIn: () => void;
   signOut: () => void;
@@ -41,6 +43,28 @@ const discovery = {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User>({} as User);
   const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState("");
+
+  async function loadStorage() {
+    setLoading(true);
+    const getUserToken = await AsyncStorage.getItem(COLLECTION_TOKEN);
+    const getStorageUser = await AsyncStorage.getItem(COLLECTION_USER);
+
+    const userData = JSON.parse(String(getStorageUser));
+    const userToken = JSON.parse(String(getUserToken));
+
+    if (userData && userToken) {
+      api.defaults.headers["Authorization"] = `Bearer ${userToken}`;
+      setUser(userData);
+      setToken(userToken);
+    }
+
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    loadStorage();
+  }, []);
 
   const [request, response, promptAsync] = useAuthRequest(
     {
@@ -54,25 +78,49 @@ export function AuthProvider({ children }: AuthProviderProps) {
     discovery
   );
 
-  useEffect(() => {
-    if (response?.type === "success") {
+  function checkResponseType() {
+    if (response?.type === "success" && !token) {
       const { code } = response.params;
-      console.log(response);
-      //getToken(code);
-      setLoading(false);
+      getToken(code);
     }
+  }
+
+  useEffect(() => {
+    checkResponseType();
   }, [response]);
 
   async function getToken(code: string) {
     await api
       .post(
-        `client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&code=${code}`
+        `github.com/login/oauth/access_token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&code=${code}`
       )
       .then((response) => {
-        console.log(response.data);
+        const userToken = response.data
+          .split("&scope=read%3Auser&token_type=bearer")[0]
+          .split("access_token=")[1];
+
+        setToken(userToken);
+        api.defaults.headers.authorization = `Bearer ${userToken}`;
+
+        AsyncStorage.setItem(COLLECTION_TOKEN, JSON.stringify(userToken));
+
+        getUser();
       })
       .catch((error) => {
-        console.log(error.response);
+        Alert.alert("Erro", "Não foi possivel realizar o login");
+        setLoading(false);
+      });
+  }
+
+  async function getUser() {
+    await api
+      .get("api.github.com/user")
+      .then((response) => {
+        AsyncStorage.setItem(COLLECTION_USER, JSON.stringify(response.data));
+        setUser(response.data);
+      })
+      .catch((error) => {
+        Alert.alert("Erro", "Não foi possivel realizar o login");
       })
       .finally(() => setLoading(false));
   }
@@ -82,9 +130,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     promptAsync();
   }
 
-  function signOut() {}
+  function signOut() {
+    setUser({} as User);
+    setToken("");
+    AsyncStorage.clear();
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, token, loading, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

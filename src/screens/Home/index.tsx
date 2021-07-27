@@ -7,18 +7,19 @@ import IconPlantmanager from "../../assets/iconPlantManager.png";
 import { openURL } from "expo-linking";
 
 import { useModal } from "../../context/modal";
+import { useAuth } from "../../context/auth";
 import { ModalSignOut } from "../../components/ModalSignOut";
+import { AppButton } from "../../components/AppButton";
 
 import { styles } from "./styles";
-import { AppButton } from "../../components/AppButton";
 
 export function Home() {
   const rem = useRem();
 
+  const { user } = useAuth();
   const { modalSignOut } = useModal();
 
   function handleGoToGamePlay() {
-    console.log("ok");
     openURL("exp://exp.host/@dabisilvaab/gameplay");
   }
 
@@ -32,7 +33,7 @@ export function Home() {
 
       <View style={{ margin: rem(1, true) }}>
         <Text style={[styles.text, { fontSize: rem(1, true) }]}>
-          Olá! Seja bem vindo
+          Olá {user.name}
         </Text>
       </View>
       <View style={styles.body}>
