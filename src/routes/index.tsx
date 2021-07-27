@@ -9,8 +9,8 @@ export function Routes() {
   return (
     <NavigationContainer>
       {/* {user?.token ? <StackRoutes /> : <AuthNavigation />} */}
-      {/* <StackRoutes />  */}
-      <AuthNavigation />
+      <StackRoutes />
+      {/* <AuthNavigation /> */}
     </NavigationContainer>
   );
 }

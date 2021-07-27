@@ -15,6 +15,7 @@ import {
 
 import { Routes } from "./src/routes";
 import { AuthProvider } from "./src/context/auth";
+import { ModalProvider } from "./src/context/modal";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -29,10 +30,12 @@ export default function App() {
   }
   return (
     <SafeAreaProvider>
-      <ScreenProvider baseFontSize={16}>
+      <ScreenProvider baseFontSize={13}>
         <StatusBar style="light" translucent animated />
         <AuthProvider>
-          <Routes />
+          <ModalProvider>
+            <Routes />
+          </ModalProvider>
         </AuthProvider>
       </ScreenProvider>
     </SafeAreaProvider>
